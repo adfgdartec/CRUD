@@ -96,6 +96,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-/*git clone https://OAuth2:glpat-kJddRdFQB6PVbMH9-xSN@gitlab.com/auctionsoftware-large/project/digitrac/admin.git
-git clone https://OAuth2:glpat-kJddRdFQB6PVbMH9-xSN@gitlab.com/auctionsoftware-large/project/digitrac/front.git
-git clone https://OAuth2:glpat-kJddRdFQB6PVbMH9-xSN@gitlab.com/auctionsoftware-large/project/digitrac/api.git*/
