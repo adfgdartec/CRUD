@@ -1,31 +1,20 @@
 const express = require('express');
 const  router = express.Router({ mergeParams: true });
+const { asyncErrorHandler, isReviewAuthor } = require('../middleware');
+const {reviewCreate, reviewUpdate, reviewDelete
 
-/* GET posts index /reviews */
-router.get('/', (req, res, next) => {
-res.send(' INDEX /posts/:id/reviews');
-  });
-   
+} = require('../controllers/reviews')
     /* review reviews create /reviews */
-router.post('/', (req, res, next) => {
-  res.send('CREATE /posts/:id/reviews');
-    });
+router.post('/', asyncErrorHandler(reviewCreate));
 
 
-    /* GET reviews edit  /posts/:id/reviews/:review_id/edit */
-router.get('/:review_id/edit', (req, res, next) => {
-  res.send(' EDIT /posts/:id/reviews/:review_id/edit');
-    });
+ 
    
     /* PUT  reviews update /posts/:id/reviews/:review_id */
-router.put('/:review_id', (req, res, next) => {
-  res.send(' UPDATE /posts/:id/reviews/:review_id');
-    });
+router.put('/:review_id', isReviewAuthor, asyncErrorHandler(reviewUpdate));
 
   
   /* DELETE reviews destroy /posts/:id/reviews/:review_id */
-router.delete('/:review_id', (req, res, next) => {
-  res.send(' DELETE /posts/:id/reviews/:review_id');
-    });
+router.delete('/:review_id', isReviewAuthor, asyncErrorHandler(reviewDelete));
  
     module.exports = router;
