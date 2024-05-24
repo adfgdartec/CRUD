@@ -1,14 +1,16 @@
-<div style="margin: 20px 0;">
-    <% if(posts.page - 1){%>
-    <a href="/posts?page=<%= posts.page - 1 %>">Prev</a>
+<div style="margin: 20px 0; text-align: center;">
+    <% if (posts.hasPrevPage) { %>
+        <a href="/posts?page=<%= posts.prevPage %>">Prev</a>
     <% } %>  
-    <%for(let i = 1; i<= posts.pages; i++) {%>  
-    <a href="/posts?page=<%= i %>"
-        <%= i === posts.page ? 'style=color:#000' : '' %>
-        ><%= i %></a>    
+
+    <% for (let i = 1; i <= posts.totalPages; i++) { %>  
+        <a href="/posts?page=<%= i %>" 
+            <%= i === posts.page ? 'style="font-weight: bold; color:#000;"' : '' %>>
+            <%= i %>
+        </a>    
     <% } %>  
-    
-    <% if((posts.page + 1) <= posts.pages){%>
-        <a href="/posts?page=<%= posts.page + 1 %>">Next</a>
-        <% }%>  
+
+    <% if (posts.hasNextPage) { %>
+        <a href="/posts?page=<%= posts.nextPage %>">Next</a>
+    <% } %>  
 </div>

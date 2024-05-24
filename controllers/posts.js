@@ -11,8 +11,9 @@ module.exports = {
 			page: req.query.page || 1,
 			limit: 10,
             sort: '-_id'
-		});
+		})
 		posts.page = Number(posts.page);
+		
 		res.render('posts/index', { 
             posts, 
              mapBoxToken, 

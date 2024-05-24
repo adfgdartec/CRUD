@@ -23,7 +23,7 @@ const { ObjectId } = require('mongodb');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://rajitadarth422:xdpQFkc9g1pUt98K@cluster0.dzacj8y.mongodb.net/?retryWrites=true/surf-shop', { useNewUrlParser: true} );
+mongoose.connect('mongodb+srv://rajitadarth422:xdpQFkc9g1pUt98K@cluster0.dzacj8y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true} );
 
 const db = mongoose.connection;
 db.on('error', console.error.bind( console ,'connection error:'));
@@ -37,6 +37,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
