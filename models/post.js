@@ -4,14 +4,14 @@ const Review = require('./review');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const PostSchema = new Schema({
-	title: String,
-	price: String,
-	description: String,
-	images: [ { path: String, filename: String } ],
-	location: String,
+    title: String,
+    price: String,
+    description: String,
+    images: [{ path: String, filename: String }],
+    location: String,
     geometry: {
         type: {
-            type: String, 
+            type: String,
             enum: ['Point'],
             required: true
         },
@@ -19,64 +19,64 @@ const PostSchema = new Schema({
             type: [Number],
             required: true
         }
-        
     },
     properties: {
         description: String
-
     },
-	author: {
-		type: Schema.Types.ObjectId,
-		ref: 'User'
-	},
-	reviews: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'Review'
-		}
-	],
-	avgRating: { type: Number, default: 0 }
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
+    avgRating: { type: Number, default: 0 }
 });
 
-PostSchema.pre('remove', async function() {
-	await Review.remove({
-		_id: {
-			$in: this.reviews
-		}
-	});
+// Middleware to remove associated reviews when a post is deleted
+PostSchema.pre('remove', async function(next) {
+    try {
+        await Review.deleteMany({
+            _id: {
+                $in: this.reviews
+            }
+        });
+        next();
+    } catch (err) {
+        next(err);
+    }
 });
 
-PostSchema.methods.calculateAvgRating = function() {
-	let ratingsTotal = 0;
-	if(this.reviews.length) {
-		this.reviews.forEach(review => {
-			ratingsTotal += review.rating;
-		});
-		this.avgRating = Math.round((ratingsTotal / this.reviews.length) * 10) / 10;
-	} else {
-		this.avgRating = ratingsTotal;
-	}
-	const floorRating = Math.floor(this.avgRating);
-	this.save();
-	return floorRating;
-}
+// Method to calculate the average rating of a post
+PostSchema.methods.calculateAvgRating = async function() {
+    if (this.reviews.length) {
+        const reviews = await Review.find({
+            _id: { $in: this.reviews }
+        });
+        const ratingsTotal = reviews.reduce((sum, review) => sum + review.rating, 0);
+        this.avgRating = Math.round((ratingsTotal / reviews.length) * 10) / 10;
+    } else {
+        this.avgRating = 0;
+    }
+    await this.save();
+    return Math.floor(this.avgRating);
+};
 
 PostSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Post', PostSchema);
-
-
-
 
 /* 
 Post 
 title - string
 price - string 
 description - string
-images - array of strings
+images - array of objects with path and filename
 location - string
-lat - int/float 
-lng - int/float
+geometry - object with type (Point) and coordinates (array of numbers)
+properties - object with description
 author - Object id (ref to User)
-reviews - array of objects
+reviews - array of object ids (ref to Review)
+avgRating - number (default 0)
 */

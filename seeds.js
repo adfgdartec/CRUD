@@ -8,6 +8,7 @@ async function seedPosts() {
 
     for (let i = 0; i < 600; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
+		const random5 = Math.floor(Math.random() * 6);
         const title = faker.lorem.words();
         const description = faker.lorem.paragraphs();
         const postData = {
@@ -18,6 +19,8 @@ async function seedPosts() {
                 type: 'Point',
                 coordinates: [cities[random1000].longitude, cities[random1000].latitude],
             },
+			price: random1000,
+			avgRating: random5,
             author: '65adcba625c9bdb1a7542fe8'
         }
         let post = new Post(postData);
