@@ -63,7 +63,7 @@ module.exports = {
 	},
 	// Posts Edit
 	 postEdit(req, res, next) {
-		res.render('posts/edit', { post });
+		res.render('posts/edit', { Post });
 	},
 	// Posts Update
 	async postUpdate(req, res, next) {
@@ -125,7 +125,7 @@ module.exports = {
 		for(const image of post.images) {
 			await cloudinary.uploader.destroy(image.filename);
 		}
-		await post.remove();
+		await Post.findByIdAndDelete(post._id);
 		req.session.success = 'Post deleted successfully!';
 		res.redirect('/posts');
 	}

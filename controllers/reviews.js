@@ -29,7 +29,7 @@ module.exports = {
                  await Post.findByIdAndUpdate(req.params.id, {
                     $pull: { reviews: req.params.review_id }
                 })
-                await Review.findByIdAndRemove(req.params.review_id);
+                await Review.findByIdAndDelete(req.params.review_id);
                 req.session.success = 'Review Deleted!';
                  res.redirect(`/posts/${req.params.id}`);
         
