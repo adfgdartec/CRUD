@@ -9,6 +9,8 @@ const PostSchema = new Schema({
     description: String,
     images: [{ path: String, filename: String }],
     location: String,
+    length: Number,      // Added length
+    width: Number,       // Added width
     geometry: {
         type: {
             type: String,
@@ -66,17 +68,3 @@ PostSchema.methods.calculateAvgRating = async function() {
 PostSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Post', PostSchema);
-
-/* 
-Post 
-title - string
-price - string 
-description - string
-images - array of objects with path and filename
-location - string
-geometry - object with type (Point) and coordinates (array of numbers)
-properties - object with description
-author - Object id (ref to User)
-reviews - array of object ids (ref to Review)
-avgRating - number (default 0)
-*/

@@ -16,13 +16,16 @@ module.exports = {
 		
 		res.render('posts/index', { 
             posts, 
-             mapBoxToken, 
-            title: 'Posts Index' });
+            mapBoxToken, 
+            title: 'Posts Index' 
+        });
 	},
+
 	// Posts New
 	postNew(req, res, next) {
 		res.render('posts/new');
 	},
+
 	// Posts Create
 	async postCreate(req, res, next) {
 		req.body.post.images = [];
@@ -43,10 +46,11 @@ module.exports = {
 
         let post = new Post(req.body.post);
 		post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p><p>${post.description.substring(0, 20)}...</p>`;
-		 await post.save();
+		await post.save();
 		req.session.success = 'Post created successfully!';
 		res.redirect(`/posts/${post.id}`);
 	},
+
 	// Posts Show
 	async postShow(req, res, next) {
 		let post = await Post.findById(req.params.id).populate({
@@ -61,45 +65,39 @@ module.exports = {
 		
 		res.render('posts/show', { post, mapBoxToken, floorRating });
 	},
+
 	// Posts Edit
-	 postEdit(req, res, next) {
-		res.render('posts/edit', { Post });
+	postEdit(req, res, next) {
+		res.render('posts/edit', { post: res.locals.post });
 	},
+
 	// Posts Update
 	async postUpdate(req, res, next) {
-		// find the post by id
 		const { post } = res.locals;
-		// check if there's any images for deletion
-		if(req.body.deleteImages && req.body.deleteImages.length) {			
-			// assign deleteImages from req.body to its own variable
+
+		if (req.body.deleteImages && req.body.deleteImages.length) {			
 			let deleteImages = req.body.deleteImages;
-			// loop over deleteImages
-			for(const filename of deleteImages) {
-				// delete images from cloudinary
+			for (const filename of deleteImages) {
 				await cloudinary.uploader.destroy(filename);
-				// delete image from post.images
-				for(const image of post.images) {
-					if(image.filename === filename) {
+				for (const image of post.images) {
+					if (image.filename === filename) {
 						let index = post.images.indexOf(image);
 						post.images.splice(index, 1);
 					}
 				}
 			}
 		}
-		// check if there are any new images for upload
-		if(req.files) {
-			// upload images
-			for(const file of req.files) {
-				
-				// add images to post.images array
+
+		if (req.files) {
+			for (const file of req.files) {
 				post.images.push({
 					path: file.path,
 					filename: file.filename
 				});
 			}
 		}
-		// check if location was updated
-		if(req.body.post.location !== post.location) {
+
+		if (req.body.post.location !== post.location) {
 			let response = await geocodingClient
 			  .forwardGeocode({
 			    query: req.body.post.location,
@@ -109,20 +107,22 @@ module.exports = {
 			post.geometry = response.body.features[0].geometry;
 			post.location = req.body.post.location;
 		}
-		// update the post with any new properties
+
 		post.title = req.body.post.title;
 		post.description = req.body.post.description;
 		post.price = req.body.post.price;
-        post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p><p>${post.description.substring(0, 20)}...</p>`;
-		// save the updated post into the db
-		 await post.save();
-		// redirect to show page
+		post.length = req.body.post.length;  // Added length
+		post.width = req.body.post.width;    // Added width
+		post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p><p>${post.description.substring(0, 20)}...</p>`;
+
+		await post.save();
 		res.redirect(`/posts/${post.id}`);
 	},
+
 	// Posts Destroy
 	async postDelete(req, res, next) {
-	const { post } = res.locals;
-		for(const image of post.images) {
+		const { post } = res.locals;
+		for (const image of post.images) {
 			await cloudinary.uploader.destroy(image.filename);
 		}
 		await Post.findByIdAndDelete(post._id);

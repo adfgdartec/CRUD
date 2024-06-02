@@ -1,8 +1,11 @@
 <% layout('layouts/posts-show-layout') -%>
 <h1><%= post.title %></h1>
-<div>Price: <%= post.price %></div>
-<div><%= post.description %></div>
-<div><%= post.location %></div>
+<div>Price: $<%= post.price %></div>
+<div>Description: <%= post.description %></div>
+<div>Location: <%= post.location %></div>
+<div>Length: <%= post.length %>in</div> <!-- Added length display -->
+<div>Width: <%= post.width %>in </div>   <!-- Added width display -->
+
 <div>
 <% for(let i = 0; i < 5; i++) { %>
     <% if(i < Math.floor(post.avgRating)) { %>
@@ -18,12 +21,15 @@
 <% } %>
 <%= `${post.avgRating} star${post.avgRating === 1 ? '' : 's'}` %>
 </div>
+
 <div>
     <% post.images.forEach(function(image) { %>
         <img src="<%= image.path %>" alt="Post image" width="200px">
     <% }); %>
 </div>
+
 <div id="map"></div>
+
 <% if(currentUser && post.author.equals(currentUser._id)) { %>
 <div>
     <a href="/posts/<%= post.id %>/edit">
