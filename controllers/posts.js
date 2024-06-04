@@ -7,19 +7,42 @@ const { cloudinary } = require('../cloudinary');
 module.exports = {
 	// Posts Index
 	async postIndex(req, res, next) {
-		let posts = await Post.paginate({}, {
+		const { search, minPrice, maxPrice, minRating, maxRating } = req.query;
+
+		let query = {};
+		if (search) {
+			query.$text = { $search: search };
+		}
+		if (minPrice || maxPrice) {
+			query.price = {};
+			if (minPrice) query.price.$gte = minPrice;
+			if (maxPrice) query.price.$lte = maxPrice;
+		}
+		if (minRating || maxRating) {
+			query.avgRating = {};
+			if (minRating) query.avgRating.$gte = minRating;
+			if (maxRating) query.avgRating.$lte = maxRating;
+		}
+
+		let posts = await Post.paginate(query, {
 			page: req.query.page || 1,
 			limit: 10,
-            sort: '-_id'
-		})
+			sort: '-_id'
+		});
 		posts.page = Number(posts.page);
-		
+
 		res.render('posts/index', { 
-            posts, 
-            mapBoxToken, 
-            title: 'Posts Index' 
-        });
+			posts, 
+			mapBoxToken, 
+			title: 'Posts Index',
+			search,
+			minPrice,
+			maxPrice,
+			minRating,
+			maxRating
+		});
 	},
+
 
 	// Posts New
 	postNew(req, res, next) {

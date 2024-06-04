@@ -9,8 +9,8 @@ const PostSchema = new Schema({
     description: String,
     images: [{ path: String, filename: String }],
     location: String,
-    length: Number,      // Added length
-    width: Number,       // Added width
+    length: Number,
+    width: Number,
     geometry: {
         type: {
             type: String,
@@ -36,7 +36,9 @@ const PostSchema = new Schema({
     avgRating: { type: Number, default: 0 }
 });
 
-// Middleware to remove associated reviews when a post is deleted
+// Adding text index for title and description to enable text search
+PostSchema.index({ title: 'text', description: 'text' });
+
 PostSchema.pre('remove', async function(next) {
     try {
         await Review.deleteMany({
@@ -50,7 +52,6 @@ PostSchema.pre('remove', async function(next) {
     }
 });
 
-// Method to calculate the average rating of a post
 PostSchema.methods.calculateAvgRating = async function() {
     if (this.reviews.length) {
         const reviews = await Review.find({

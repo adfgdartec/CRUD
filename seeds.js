@@ -19,7 +19,7 @@ async function seedPosts() {
                 type: 'Point',
                 coordinates: [cities[random1000].longitude, cities[random1000].latitude],
             },
-			price: random1000,
+			price: Number(faker.commerce.price()),  // Ensure price is a number
 			avgRating: random5,
             author: '65adcba625c9bdb1a7542fe8'
         }
