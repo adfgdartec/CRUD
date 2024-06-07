@@ -1,7 +1,13 @@
 <% if(success && success.length){ %>
-<h1 class="color-green"><%= success %></h1>
- <% } %>  
- 
- <% if(error && error.length){ %>
-    <h1 class="color-red"><%= error %></h1>
-     <% } %>   
+   <div class="message message-success">
+       <span class="icon">&#10003;</span> <!-- Check mark icon -->
+       <%= success %>
+   </div>
+<% } %>  
+
+<% if(error && error.length){ %>
+   <div class="message message-error">
+       <span class="icon">&#10005;</span> <!-- X mark icon -->
+       <%= error %>
+   </div>
+<% } %>  

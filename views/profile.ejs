@@ -8,8 +8,8 @@
 <div style="margin-top: 20px;">
     <p style="font-weight: bold; text-align: center;">Recent Posts:</p>
     <% posts.forEach(function(post) { %>
-        <div>
-            <a href="/posts/<%= post.id %>" style=" color: #333; text-align: center;"><%= post.title %></a>
+        <div style="text-align: center;">
+            <a href="/posts/<%= post.id %>" style=" color: #333; text-align: center; text-decoration: none;"><%= post.title %></a>
         </div>
     <% }); %>
 </div>

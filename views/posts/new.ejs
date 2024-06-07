@@ -1,14 +1,85 @@
 <% layout('layouts/boilerplate') -%>
-<h1>New Posts!</h1>
+<h1>New Product</h1>
 <form action="/posts" method="POST" enctype="multipart/form-data">
-    <div><input type="text" name="post[title]" placeholder="Title"></div>
-    <div><input type="number" name="post[price]" step=".01" placeholder="Price"></div>
-    <div><input type="number" name="post[length]" placeholder="Length"></div> <!-- Added length field -->
-    <div><input type="number" name="post[width]" placeholder="Width"></div>   <!-- Added width field -->
-    <div>
-        <input type="file" accept="images/*" name="images" multiple>
+    <div class="form-group">
+        <input type="text" name="post[title]" placeholder="Title" class="form-control">
     </div>
-    <textarea name="post[description]" placeholder="Description"></textarea>
-    <div><input type="text" name="post[location]" placeholder="Location"></div>
-    <div><input type="submit"></div>
+    <div class="form-group">
+        <input type="number" name="post[price]" step=".01" placeholder="Price" class="form-control">
+    </div>
+    <div class="form-group">
+        <input type="number" name="post[length]" placeholder="Length" class="form-control"> <!-- Added length field -->
+    </div>
+    <div class="form-group">
+        <input type="number" name="post[width]" placeholder="Width" class="form-control">   <!-- Added width field -->
+    </div>
+    <div class="form-group">
+        <input type="file" accept="images/*" name="images" multiple class="form-control-file">
+    </div>
+    <div class="form-group">
+        <textarea name="post[description]" placeholder="Description" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <input type="text" name="post[location]" placeholder="Location" class="form-control">
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary">
+    </div>
 </form>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #000;
+    }
+
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control, .form-control-file, .form-control-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #000;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .form-control-file {
+        padding: 3px;
+    }
+
+    .btn-primary {
+        background-color: #000000;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .btn-primary:hover {
+        background-color: #fff;
+        color: #000;
+    }
+</style>

@@ -1,6 +1,80 @@
 <% layout('layouts/boilerplate') -%>
-<h1>Edit Post!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+        color: #000;
+        margin: 0;
+        padding: 20px;
+    }
 
+    h1 {
+        text-align: center;
+        color: #000;
+    }
+
+    #postEditForm {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #postEditForm div {
+        margin-bottom: 15px;
+    }
+
+    #postEditForm input[type="text"],
+    #postEditForm input[type="number"],
+    #postEditForm textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #000000;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    #postEditForm input[type="file"] {
+        display: block;
+    }
+
+    #postEditForm img {
+        display: block;
+        margin-top: 10px;
+    }
+
+    #postEditForm label {
+        margin-left: 5px;
+    }
+
+    #postEditForm textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+    #postEditForm input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background: #000000;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #postEditForm input[type="submit"]:hover {
+        background: #000000;
+    }
+</style>
+<body>
+    <% layout('layouts/boilerplate') -%>
+    <h1> Edit Product</h1>
 <form action="/posts/<%= post.id %>?_method=PUT" method="POST" id="postEditForm" enctype="multipart/form-data">
     <div><input type="text" name="post[title]" placeholder="Title" value="<%= post.title %>"></div>
     <div><input type="number" name="post[price]" step=".01" placeholder="Price" value="<%= post.price %>"></div>
@@ -25,3 +99,6 @@
 </form>
 
 <script src="/javascripts/post-edit.js"></script>
+
+</body>
+</html>
