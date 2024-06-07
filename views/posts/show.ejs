@@ -1,109 +1,297 @@
 <% layout('layouts/posts-show-layout') -%>
-<h1><%= post.title %></h1>
-<div>Price: $<%= post.price %></div>
-<div>Description: <%= post.description %></div>
-<div>Location: <%= post.location %></div>
-<div>Length: <%= post.length %>in</div> <!-- Added length display -->
-<div>Width: <%= post.width %>in </div>   <!-- Added width display -->
+<!-- Link to Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<!-- Font Awesome for star icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<div>
-<% for(let i = 0; i < 5; i++) { %>
-    <% if(i < Math.floor(post.avgRating)) { %>
-        <!-- display a full star -->
-        <i class="fas fa-star"></i>
-    <% } else if((post.avgRating - i) > 0 && (post.avgRating - i) < 1) { %>
-        <!-- display a half star -->
-        <i class="fas fa-star-half-alt"></i>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #fff; /* Light cyan background */
+        color: #000000;
+    }
+
+    h1, h2, h3 {
+        font-family: 'Lora', serif;
+        color: #ff6347; /* Tomato red */
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .post-details {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 2px solid #ff6347; /* Tomato red border */
+    }
+
+    .post-details div {
+        margin-bottom: 15px;
+    }
+
+    .stars {
+        display: flex;
+        align-items: center;
+    }
+
+    .stars i {
+        color: #ffd700; /* Gold for stars */
+        margin-right: 5px;
+    }
+
+    .images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .images img {
+        width: 200px;
+        border-radius: 10px;
+        border: 2px solid #ff6347; /* Tomato red border */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #map {
+        width: 100%;
+        height: 400px; /* Adjust height as needed */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 2px solid #ff6347; /* Tomato red border */
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        color: #fff;
+        background-color: #ff4500; /* Orange red */
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #e63946; /* Coral red */
+    }
+
+    .btn-edit {
+        margin-right: 10px;
+    }
+
+    .review-form, .edit-review-form {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 2px solid #ff6347; /* Tomato red border */
+    }
+
+    .review-form textarea, .edit-review-form textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .review-form input[type="submit"], .edit-review-form input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #ff4500; /* Orange red */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .review-form input[type="submit"]:hover, .edit-review-form input[type="submit"]:hover {
+        background-color: #e63946; /* Coral red */
+    }
+
+    .reviews {
+        margin-top: 20px;
+    }
+
+    .review {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .review:last-child {
+        border-bottom: none;
+    }
+
+    .review-author {
+        font-weight: bold;
+    }
+
+    .review-rating {
+        color: #ffd700; /* Gold for stars */
+    }
+
+    .toggle-edit-form {
+        background-color: transparent;
+        color: #007bff;
+        border: none;
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 16px;
+    }
+
+    .toggle-edit-form:hover {
+        color: #0056b3;
+    }
+
+    .edit-review-form {
+        display: none;
+    }
+</style>
+
+<div class="post-details">
+    <h1><%= post.title %></h1>
+    <div>Price: $<%= post.price %></div>
+    <div>Description: <%= post.description %></div>
+    <div>Location: <%= post.location %></div>
+    <div>Length: <%= post.length %>in</div>
+    <div>Width: <%= post.width %>in</div>
+
+    <div class="stars">
+        <% for(let i = 0; i < 5; i++) { %>
+            <% if(i < Math.floor(post.avgRating)) { %>
+                <i class="fas fa-star"></i>
+            <% } else if((post.avgRating - i) > 0 && (post.avgRating - i) < 1) { %>
+                <i class="fas fa-star-half-alt"></i>
+            <% } else { %>
+                <i class="far fa-star"></i>
+            <% } %>
+        <% } %>
+        <%= `${post.avgRating} star${post.avgRating === 1 ? '' : 's'}` %>
+    </div>
+
+    <div class="images">
+        <% post.images.forEach(function(image) { %>
+            <img src="<%= image.path %>" alt="Post image">
+        <% }); %>
+    </div>
+
+    <div id="map"></div>
+
+    <% if(currentUser && post.author.equals(currentUser._id)) { %>
+        <div>
+            <a href="/posts/<%= post.id %>/edit">
+                <button class="btn btn-edit">Edit</button>
+            </a>
+            <form action="/posts/<%= post.id %>?_method=DELETE" method="POST" style="display:inline;">
+                <button class="btn">Delete</button>
+            </form>
+        </div>
+    <% } %>
+
+    <% if(currentUser) { %>
+        <div class="review-form">
+            <h2>Create a Review</h2>
+            <form action="/posts/<%= post.id %>/reviews" method="POST">
+                <textarea name="review[body]" required></textarea>
+                <fieldset class="starability-basic">
+                    <legend>Rating:</legend>
+                    <button class="clear-rating" type="button">Clear Rating</button>
+                    <input type="radio" id="rate0" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                    <input type="radio" id="rate1" name="review[rating]" value="1" />
+                    <label for="rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="rate2" name="review[rating]" value="2" />
+                    <label for="rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="rate3" name="review[rating]" value="3" />
+                    <label for="rate3" title="Average">3 stars</label>
+                    <input type="radio" id="rate4" name="review[rating]" value="4" />
+                    <label for="rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="rate5" name="review[rating]" value="5" />
+                    <label for="rate5" title="Amazing">5 stars</label>
+                </fieldset>
+                <input type="submit">
+            </form>
+        </div>
     <% } else { %>
-        <!-- display an empty star -->
-        <i class="far fa-star"></i>
+        <h2><a href="/login?returnTo=true">Create a Review</a></h2>
     <% } %>
-<% } %>
-<%= `${post.avgRating} star${post.avgRating === 1 ? '' : 's'}` %>
-</div>
 
-<div>
-    <% post.images.forEach(function(image) { %>
-        <img src="<%= image.path %>" alt="Post image" width="200px">
-    <% }); %>
-</div>
-
-<div id="map"></div>
-
-<% if(currentUser && post.author.equals(currentUser._id)) { %>
-<div>
-    <a href="/posts/<%= post.id %>/edit">
-        <button>Edit</button>
-    </a>
-</div>
-<div>
-    <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-        <input type="submit" value="Delete">
-    </form>
-</div>
-<% } %>
-
-<% if(currentUser) { %>
-<h2>Create a Review</h2>
-<form action="/posts/<%= post.id %>/reviews" method="POST">
-    <textarea name="review[body]" required></textarea>
-    <fieldset class="starability-basic">
-        <legend>Rating:</legend>
-        <button class="clear-rating" type="button">Clear Rating</button>
-        <input type="radio" id="rate0" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
-        <input type="radio" id="rate1" name="review[rating]" value="1" />
-        <label for="rate1" title="Terrible">1 star</label>
-        <input type="radio" id="rate2" name="review[rating]" value="2" />
-        <label for="rate2" title="Not good">2 stars</label>
-        <input type="radio" id="rate3" name="review[rating]" value="3" />
-        <label for="rate3" title="Average">3 stars</label>
-        <input type="radio" id="rate4" name="review[rating]" value="4" />
-        <label for="rate4" title="Very good">4 stars</label>
-        <input type="radio" id="rate5" name="review[rating]" value="5" />
-        <label for="rate5" title="Amazing">5 stars</label>
-    </fieldset>
-    <input type="submit">
-</form>
-<% } else { %>
-<h2><a href="/login?returnTo=true">Create a Review</a></h2>
-<% } %>
-
-<h3>Reviews</h3>
-<% post.reviews.forEach(function(review) { %>
-    <div>
-        Author: <%= review.author.username %><br>
-        <%= review.body %><br>
-        Rating: <%= review.rating %>
+    <div class="reviews">
+        <h3>Reviews</h3>
+        <% post.reviews.forEach(function(review) { %>
+            <div class="review">
+                <div class="review-author">Author: <%= review.author.username %></div>
+                <div><%= review.body %></div>
+                <div class="review-rating">Rating: <%= review.rating %></div>
+                <% if(currentUser && review.author.equals(currentUser._id)) { %>
+                    <button class="toggle-edit-form">Edit</button>
+                    <form action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=PUT" method="POST" class="edit-review-form">
+                        <textarea name="review[body]" required><%= review.body %></textarea>
+                        <fieldset class="starability-basic">
+                            <legend>Rating:</legend>
+                            <button class="clear-rating" type="button">Clear Rating</button>
+                            <input type="radio" id="edit-rate0" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                            <input type="radio" id="edit-rate1" name="review[rating]" value="1" />
+                            <label for="edit-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="edit-rate2" name="review[rating]" value="2" />
+                            <label for="edit-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="edit-rate3" name="review[rating]" value="3" />
+                            <label for="edit-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="edit-rate4" name="review[rating]" value="4" />
+                            <label for="edit-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="edit-rate5" name="review[rating]" value="5" />
+                            <label for="edit-rate5" title="Amazing">5 stars</label>
+                        </fieldset>
+                        <input type="submit" value="Update">
+                    </form>
+                    <script>
+                        document.getElementById('edit-rate<%= review.rating %>').checked = true;
+                    </script>
+                    <form action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
+                        <input type="submit" value="Delete">
+                    </form>
+                <% } %>
+            </div>
+        <% }); %>
     </div>
-    <% if(currentUser && review.author.equals(currentUser._id)) { %>
-    <div>
-        <button class="toggle-edit-form">Edit</button>
-        <form action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=PUT" method="POST" class="edit-review-form">
-            <textarea name="review[body]" required><%= review.body %></textarea>
-            <fieldset class="starability-basic">
-                <legend>Rating:</legend>
-                <button class="clear-rating" type="button">Clear Rating</button>
-                <input type="radio" id="edit-rate0" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
-                <input type="radio" id="edit-rate1" name="review[rating]" value="1" />
-                <label for="edit-rate1" title="Terrible">1 star</label>
-                <input type="radio" id="edit-rate2" name="review[rating]" value="2" />
-                <label for="edit-rate2" title="Not good">2 stars</label>
-                <input type="radio" id="edit-rate3" name="review[rating]" value="3" />
-                <label for="edit-rate3" title="Average">3 stars</label>
-                <input type="radio" id="edit-rate4" name="review[rating]" value="4" />
-                <label for="edit-rate4" title="Very good">4 stars</label>
-                <input type="radio" id="edit-rate5" name="review[rating]" value="5" />
-                <label for="edit-rate5" title="Amazing">5 stars</label>
-            </fieldset>
-            <input type="submit" value="Update">
-        </form>
-        <script>
-            document.getElementById('edit-rate<%= review.rating %>').checked = true;
-        </script>
-        <form action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
-            <input type="submit" value="Delete">
-        </form>
-    </div>
-    <% } %>
-    <hr>
-<% }); %>
+</div>
+
+<script>
+    document.querySelectorAll('.toggle-edit-form').forEach(button => {
+        button.addEventListener('click', () => {
+            const form = button.nextElementSibling;
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+
+    mapboxgl.accessToken = "<%=mapBoxToken%>";
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [post.geometry.coordinates[0], post.geometry.coordinates[1]],
+        zoom: 10
+    });
+
+    new mapboxgl.Marker()
+        .setLngLat([post.geometry.coordinates[0], post.geometry.coordinates[1]])
+        .addTo(map);
+</script>

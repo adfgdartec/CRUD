@@ -1,55 +1,199 @@
 <% layout('layouts/boilerplate') -%>
-<style>
-    .container {
-        display: flex;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #ffffff; /* Light cyan background */
+            color: #000000;
+        }
 
-    .search-bar {
-        width: 33%;
-        padding: 10px;
-    }
+        h1, h2 {
+            font-family: 'Lora', serif;
+            color: #000000;
+             text-align: center;
+        }
 
-    #map {
-        width: 67%;
-        height: 400px; /* Adjust height as needed */
-    }
-</style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
 
-<h1>Posts Index!</h1>
+        .search-bar {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
 
-<div class="container">
-    <div class="search-bar">
-    <form action="/posts" method="GET">
-	<input type="text" name="search" placeholder="Search" value="<%= search %>">
-	<input type="number" name="minPrice" placeholder="Min Price" value="<%= minPrice %>">
-	<input type="number" name="maxPrice" placeholder="Max Price" value="<%= maxPrice %>">
-	<input type="number" name="minRating" placeholder="Min Rating" value="<%= minRating %>">
-	<input type="number" name="maxRating" placeholder="Max Rating" value="<%= maxRating %>">
-	<button type="submit">Filter</button>
-</form>
+        .filter {
+            margin-bottom: 20px;
+        }
+
+        .filter input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #fff; /* Light blue */
+            margin-right: 10px;
+            display: inline-block;
+            box-sizing: border-box;
+        }
+
+        .filter button {
+            padding: 10px 20px;
+            background-color:#000000; /* Orange red */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            box-sizing: border-box;
+        }
+
+        .filter button:hover {
+            background-color: #000000; /* Coral red */
+        }
+
+        #map {
+            width: calc(100% - 40px);
+            height: 400px; /* Adjust height as needed */
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #000000; /* Tomato red border */
+            background-color: #000000; /* Light periwinkle blue */
+            margin-bottom: 40px;
+        }
+
+        .post {
+            width: calc(50% - 40px);
+            padding: 20px;
+            margin: 0 20px 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .post h2 {
+            margin-top: 0;
+            color: #000000; /* Orange red */
+        }
+
+        .post div {
+            margin-bottom: 10px;
+        }
+
+        .post a {
+            color: #000000;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .post a:hover {
+            color: #000000;
+            text-decoration: underline;
+        }
+
+        .paginate {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .paginate a {
+            margin: 0 5px;
+            padding: 10px 15px;
+            border: 1px solid #000000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            background-color: #000000;
+        }
+
+        .paginate a:hover {
+            background-color: #000000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Products</h1>
+
+    <div class="container">
+        <div class="search-bar">
+            <form action="/posts" method="GET">
+                <h1>Product Search</h1>
+                <div class="filter filter-1">
+                    <input type="text" name="search" placeholder="Search" value="<%= search %>">
+                </div>
+                <div class="filter filter-2">
+                    <input type="number" name="minPrice" placeholder="Min Price" value="<%= minPrice %>">
+                </div>
+                <div class="filter filter-3">
+                    <input type="number" name="maxPrice" placeholder="Max Price" value="<%= maxPrice %>">
+                </div>
+                <div class="filter filter-4">
+                    <input type="number" name="minRating" placeholder="Min Rating" value="<%= minRating %>">
+                </div>
+                <div class="filter filter-5">
+                    <input type="number" name="maxRating" placeholder="Max Rating" value="<%= maxRating %>">
+                </div>
+                <div class="filter filter-6">
+                    <button type="submit">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="map"></div>
+
+        <% posts.docs.forEach(function(post){ %>
+            <div class="post">
+                <h2><%= post.title %></h2>
+                <div>Price: $<%= post.price %></div>
+                <div><%= post.description %></div>
+                <div>Location: <%= post.location %></div>
+                <div>Dimensions: <%= post.length %>in x <%= post.width %>in</div>
+                <div><a href="/posts/<%= post.id %>">View More</a></div>
+            </div>
+        <% }); %>
+
+        <div class="paginate">
+            <%- include ("../partials/paginatePosts") %>
+        </div>
     </div>
 
-    <div id="map"></div>
-</div>
-
-<%- include ("../partials/paginatePosts") %>
-
-<% posts.docs.forEach(function(post){ %>
-    <div>
-        <h2><%= post.title %></h2>
-        <div>Price: $<%= post.price %></div>
-        <div><%= post.description %></div>
-        <div><%= post.location %></div>
-        <div><%= post.length %>in</div>
-        <div><%= post.width %>in</div>
-        <div><a href="/posts/<%= post.id %>">View More</a></div>
-    </div>
-<% }); %>
-
-<%- include ("../partials/paginatePosts") %>
-
-<script>
-    mapboxgl.accessToken = "<%=mapBoxToken%>";
-    var posts = {features: <%- JSON.stringify(posts.docs) %>};
-</script>
-<script src="/javascripts/allPostsClusterMap.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <script>
+        mapboxgl.accessToken = "<%=mapBoxToken%>";
+        var posts = {features: <%- JSON.stringify(posts.docs) %>};
+    </script>
+    <script src="/javascripts/allPostsClusterMap.js"></script>
+</body>
+</html>
